@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Office Hours{% endblock %} - Office-hours sign-up</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    nav { display: flex; gap: 1rem; align-items: center; border-bottom: 1px solid #ccc; padding-bottom: 0.75rem; margin-bottom: 1.5rem; }
+    nav .spacer { flex: 1; }
+    nav form { display: inline; }
+    .flash { background: #fff8d6; border: 1px solid #e6d78a; padding: 0.5rem 0.75rem; margin-bottom: 1rem; border-radius: 4px; }
+    label { display: block; margin-top: 0.75rem; }
+    input[type=text], input[type=password] { width: 100%; padding: 0.4rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: 0.4rem 0.9rem; cursor: pointer; }
+    table.sheet { border-collapse: collapse; width: 100%; }
+    table.sheet th, table.sheet td { border: 1px solid #ccc; padding: 0.4rem; text-align: center; vertical-align: middle; }
+    table.sheet tbody th { text-align: left; white-space: nowrap; }
+    table.sheet td form { display: inline; }
+    table.sheet td button { margin: 0.25rem 0 0; padding: 0.2rem 0.6rem; }
+    table.sheet td.mine { background: #e3f5e1; }
+    table.sheet td.taken { background: #eee; color: #666; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{{ url_for('index') }}">Home</a>
+    {% if g.user %}<a href="{{ url_for('sheet') }}">Sign-up sheet</a>{% endif %}
+    <span class="spacer"></span>
+    {% if g.user %}
+      <span>Logged in as <strong>{{ g.user['username'] }}</strong></span>
+      <form method="post" action="{{ url_for('logout') }}">
+        <button type="submit">Log out</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('register') }}">Register</a>
+      <a href="{{ url_for('login') }}">Log in</a>
+    {% endif %}
+  </nav>
+
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>
