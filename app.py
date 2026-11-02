@@ -20,14 +20,14 @@ DATABASE = BASE_DIR / "signup.db"
 app = Flask(__name__)
 # Replace with a fixed random value (e.g. via an environment variable) before deploying.
 app.config["SECRET_KEY"] = "dev-change-me"
-app.config.update(
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE="Lax",
-)
+# The session cookie travels only over HTTPS, is hidden from page scripts,
+# and is not sent with requests that other sites start.
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
 
-MIN_PASSWORD_LENGTH = 8
 MAX_USERNAME_LENGTH = 32
+MIN_PASSWORD_LENGTH = 8
 
 
 # --- Database helpers -------------------------------------------------------
@@ -158,6 +158,8 @@ def register():
             flash("Username is required.")
         elif len(username) > MAX_USERNAME_LENGTH:
             flash(f"Username must be at most {MAX_USERNAME_LENGTH} characters.")
+        elif not password:
+            flash("Password is required.")
         elif len(password) < MIN_PASSWORD_LENGTH:
             flash(f"Password must be at least {MIN_PASSWORD_LENGTH} characters.")
         else:
@@ -290,7 +292,7 @@ def cancel():
     if deleted:
         flash(f"Cancelled {DAYS[weekday]} at {format_time(start)}.")
     elif g.is_admin:
-        flash("That slot is not booked.")
+        flash("There is no booking in that slot.")
     else:
         flash("You have no booking in that slot.")
     return redirect(url_for("sheet"))
