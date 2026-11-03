@@ -34,11 +34,6 @@
                 </form>
               {% elif g.is_admin %}
                 <span>Taken by <strong>{{ cell.username }}</strong></span>
-                <form method="post" action="{{ url_for('cancel') }}">
-                  <input type="hidden" name="weekday" value="{{ cell.weekday }}">
-                  <input type="hidden" name="start" value="{{ cell.start }}">
-                  <button type="submit">Cancel</button>
-                </form>
               {% else %}
                 <span>Taken</span>
               {% endif %}
